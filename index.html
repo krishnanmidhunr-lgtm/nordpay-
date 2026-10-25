@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NordPay — Employee expenses, without the administrative headache.</title>
+  <meta name="description" content="NordPay helps growing companies automate employee expenses, receipts, approvals and reimbursements." />
+
+  <!--
+    GOOGLE ANALYTICS 4
+    1. Create a GA4 Web Data Stream.
+    2. Copy your Measurement ID (looks like G-XXXXXXXXXX).
+    3. Replace G-XXXXXXXXXX below.
+  -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <style>
+    :root {
+      --navy:#10283f;
+      --blue:#1f6feb;
+      --teal:#19a99a;
+      --ink:#172b3a;
+      --muted:#667786;
+      --line:#e5ebef;
+      --soft:#f5f8fa;
+      --white:#fff;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:#fff;
+      line-height:1.6;
+    }
+    a { color:inherit; text-decoration:none; }
+    .container { width:min(1120px,92%); margin:auto; }
+    nav {
+      height:76px; display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--line); background:rgba(255,255,255,.94);
+      position:sticky; top:0; z-index:20; backdrop-filter:blur(12px);
+    }
+    .brand { font-size:23px; font-weight:800; letter-spacing:-.04em; color:var(--navy); }
+    .navlinks { display:flex; align-items:center; gap:25px; font-size:14px; color:#526575; }
+    .navlinks a:hover { color:var(--navy); }
+    .lang button {
+      border:0; background:transparent; font-weight:700; cursor:pointer; color:#7b8a95;
+      padding:4px;
+    }
+    .lang button.active { color:var(--navy); }
+    .hero {
+      padding:105px 0 90px;
+      background:linear-gradient(135deg,#f7fbfd 0%,#fff 60%);
+    }
+    .hero-grid { display:grid; grid-template-columns:1.08fr .92fr; gap:65px; align-items:center; }
+    .eyebrow { color:var(--teal); font-weight:800; text-transform:uppercase; letter-spacing:.12em; font-size:12px; }
+    h1 { font-size:clamp(44px,6vw,72px); line-height:1.02; letter-spacing:-.055em; margin:15px 0 25px; color:var(--navy); }
+    .hero p { color:var(--muted); font-size:19px; max-width:610px; }
+    .actions { display:flex; gap:12px; margin-top:30px; flex-wrap:wrap; }
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; padding:13px 21px;
+      border-radius:9px; font-weight:750; border:1px solid transparent; cursor:pointer;
+      font:inherit;
+    }
+    .btn-primary { background:var(--navy); color:#fff; }
+    .btn-primary:hover { transform:translateY(-1px); }
+    .btn-secondary { background:#fff; border-color:#cfd9df; color:var(--navy); }
+    .hero-card {
+      min-height:390px; border-radius:24px; background:var(--navy);
+      padding:28px; color:#fff; box-shadow:0 24px 70px rgba(16,40,63,.18);
+      display:flex; flex-direction:column; justify-content:space-between;
+    }
+    .expense-window { background:#fff; color:var(--ink); border-radius:15px; padding:18px; }
+    .expense-row { display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding:12px 0; font-size:14px; }
+    .expense-row:last-child { border-bottom:0; }
+    .status { color:var(--teal); font-weight:800; }
+    .trust { padding:35px 0; border-bottom:1px solid var(--line); }
+    .trust p { text-align:center; color:#82909a; font-size:12px; text-transform:uppercase; letter-spacing:.13em; font-weight:750; }
+    .logos { display:flex; justify-content:space-around; gap:20px; flex-wrap:wrap; color:#80909d; font-weight:750; }
+    section { padding:92px 0; }
+    .section-head { max-width:700px; margin-bottom:45px; }
+    h2 { font-size:clamp(32px,4vw,49px); line-height:1.08; letter-spacing:-.045em; color:var(--navy); margin:10px 0 15px; }
+    .section-head p { color:var(--muted); font-size:17px; }
+    .problem { background:var(--soft); }
+    .steps, .features, .benefits, .pricing-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+    }
+    .card { border:1px solid var(--line); border-radius:16px; padding:27px; background:#fff; }
+    .number { font-weight:900; color:var(--teal); font-size:13px; }
+    .card h3 { color:var(--navy); margin:10px 0 8px; }
+    .card p { color:var(--muted); margin:0; }
+    .feature-icon {
+      width:42px;height:42px;border-radius:11px;background:#eaf7f5;color:#148f82;
+      display:grid;place-items:center;font-weight:900;
+    }
+    .integrations { background:var(--navy); color:#fff; }
+    .integrations h2 { color:#fff; }
+    .integrations p { color:#b8c6d0; }
+    .integration-list { display:flex; gap:12px; flex-wrap:wrap; margin-top:25px; }
+    .pill { border:1px solid rgba(255,255,255,.2); border-radius:999px; padding:9px 15px; color:#e4edf2; }
+    .quote { font-size:22px; color:var(--navy); max-width:780px; }
+    .faq { border-top:1px solid var(--line); padding:19px 0; }
+    .faq summary { cursor:pointer; font-weight:800; color:var(--navy); }
+    .faq p { color:var(--muted); }
+    .final { background:#f4f8fa; text-align:center; }
+    .final p { max-width:650px; margin:0 auto; color:var(--muted); }
+    footer { padding:35px 0; border-top:1px solid var(--line); color:#7b8994; font-size:13px; }
+    .footer-inner { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+    .hidden { display:none !important; }
+
+    /* Pricing modal */
+    .modal {
+      position:fixed; inset:0; background:rgba(7,24,38,.68); z-index:100;
+      display:none; align-items:center; justify-content:center; padding:20px;
+    }
+    .modal.open { display:flex; }
+    .modal-box {
+      width:min(980px,100%); max-height:92vh; overflow:auto; background:#fff;
+      border-radius:20px; padding:32px; position:relative;
+      box-shadow:0 30px 100px rgba(0,0,0,.25);
+    }
+    .close {
+      position:absolute; right:18px; top:14px; border:0; background:transparent;
+      font-size:28px; cursor:pointer; color:#6f7d87;
+    }
+    .lead-form { max-width:520px; margin:20px auto 0; }
+    .lead-form label { display:block; font-size:13px; font-weight:800; color:var(--navy); margin:13px 0 6px; }
+    .lead-form input {
+      width:100%; padding:13px 14px; border:1px solid #ccd6dc; border-radius:8px;
+      font:inherit; outline:none;
+    }
+    .lead-form input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(31,111,235,.1); }
+    .pricing-grid { margin-top:28px; }
+    .price-card { position:relative; }
+    .price { font-size:34px; font-weight:900; color:var(--navy); margin:12px 0 5px; }
+    .price small { font-size:14px; color:var(--muted); font-weight:500; }
+    .price-card ul { padding-left:19px; color:var(--muted); }
+    .notice { font-size:12px; color:#7a8993; margin-top:12px; }
+    .success {
+      margin-top:18px; padding:14px 16px; border-radius:10px; background:#eaf7f5;
+      color:#13796e; font-weight:750;
+    }
+
+    @media (max-width:800px) {
+      .navlinks { display:none; }
+      .hero-grid { grid-template-columns:1fr; }
+      .steps,.features,.benefits,.pricing-grid { grid-template-columns:1fr; }
+      section { padding:70px 0; }
+      .hero { padding:75px 0; }
+      .modal-box { padding:25px 18px; }
+    }
+  </style>
+</head>
+
+<body>
+<nav>
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;width:100%">
+    <a class="brand" href="#">NordPay</a>
+    <div class="navlinks">
+      <a href="#product" data-en="Product" data-sv="Produkt">Product</a>
+      <a href="#features" data-en="Features" data-sv="Funktioner">Features</a>
+      <a href="#pricing" class="pricing-link" data-en="Pricing" data-sv="Priser">Pricing</a>
+      <a href="#faq" data-en="FAQ" data-sv="Vanliga frågor">FAQ</a>
+    </div>
+    <div class="lang">
+      <button id="enBtn" class="active" onclick="setLanguage('en')">EN</button> |
+      <button id="svBtn" onclick="setLanguage('sv')">SV</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow" data-en="Expense management for growing teams" data-sv="Utläggshantering för växande företag">Expense management for growing teams</div>
+      <h1 data-en="Employee expenses, without the administrative headache." data-sv="Medarbetarnas utlägg, utan det administrativa krånglet.">Employee expenses, without the administrative headache.</h1>
+      <p data-en="NordPay helps finance teams automate receipts, approvals and reimbursements — so employees can spend less time on admin and more time on meaningful work."
+         data-sv="NordPay hjälper ekonomiteam att automatisera kvitton, godkännanden och ersättningar — så att medarbetarna kan lägga mindre tid på administration och mer tid på värdeskapande arbete.">
+        NordPay helps finance teams automate receipts, approvals and reimbursements — so employees can spend less time on admin and more time on meaningful work.
+      </p>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="openPricing('hero')" data-en="Show pricing" data-sv="Se priser">Show pricing</button>
+        <a class="btn btn-secondary" href="#product" data-en="See how it works" data-sv="Se hur det fungerar">See how it works</a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div>
+        <div style="font-weight:800;font-size:15px;opacity:.85">NordPay</div>
+        <div style="font-size:28px;font-weight:850;margin-top:8px">Expense overview</div>
+      </div>
+      <div class="expense-window">
+        <div class="expense-row"><span>Hotel · Stockholm</span><strong>€184.00</strong></div>
+        <div class="expense-row"><span>Train · Göteborg</span><strong>€74.50</strong></div>
+        <div class="expense-row"><span>Client lunch</span><strong>€92.00</strong></div>
+        <div class="expense-row"><span>Approval</span><span class="status">Automated ✓</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="container">
+    <p data-en="Designed for modern finance teams" data-sv="Utformat för moderna ekonomiteam">Designed for modern finance teams</p>
+    <div class="logos"><span>ACME</span><span>NORDIC CO</span><span>FJORD</span><span>SKYLINE</span><span>VERDE</span></div>
+  </div>
+</section>
+
+<section id="product">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" data-en="How it works" data-sv="Så fungerar det">How it works</div>
+      <h2 data-en="From purchase to reimbursement, without the spreadsheet." data-sv="Från köp till ersättning, utan kalkylblad.">From purchase to reimbursement, without the spreadsheet.</h2>
+      <p data-en="One simple workflow keeps employees, managers and finance aligned."
+         data-sv="Ett enkelt arbetsflöde håller medarbetare, chefer och ekonomiavdelning synkroniserade.">
+        One simple workflow keeps employees, managers and finance aligned.
+      </p>
+    </div>
+    <div class="steps">
+      <div class="card"><div class="number">01</div><h3 data-en="Capture" data-sv="Registrera">Capture</h3><p data-en="Employees capture receipts and submit expenses in seconds." data-sv="Medarbetare registrerar kvitton och skickar in utlägg på några sekunder.">Employees capture receipts and submit expenses in seconds.</p></div>
+      <div class="card"><div class="number">02</div><h3 data-en="Approve" data-sv="Godkänn">Approve</h3><p data-en="Managers review and approve expenses with a clear audit trail." data-sv="Chefer granskar och godkänner utlägg med full spårbarhet.">Managers review and approve expenses with a clear audit trail.</p></div>
+      <div class="card"><div class="number">03</div><h3 data-en="Reimburse" data-sv="Ersätt">Reimburse</h3><p data-en="Finance gets clean data ready for reimbursement and accounting." data-sv="Ekonomiavdelningen får rena data redo för ersättning och bokföring.">Finance gets clean data ready for reimbursement and accounting.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="problem">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" data-en="Built for finance" data-sv="Byggt för ekonomi">Built for finance</div>
+      <h2 data-en="Everything your team needs to simplify expenses." data-sv="Allt ditt team behöver för att förenkla utläggshanteringen.">Everything your team needs to simplify expenses.</h2>
+    </div>
+    <div class="features">
+      <div class="card"><div class="feature-icon">✓</div><h3 data-en="Receipt capture" data-sv="Kvittohantering">Receipt capture</h3><p data-en="Collect and organize receipts without chasing employees." data-sv="Samla in och organisera kvitton utan att jaga medarbetare.">Collect and organize receipts without chasing employees.</p></div>
+      <div class="card"><div class="feature-icon">↗</div><h3 data-en="Approval workflows" data-sv="Godkännandeflöden">Approval workflows</h3><p data-en="Route expenses to the right people automatically." data-sv="Skicka automatiskt utlägg till rätt personer för godkännande.">Route expenses to the right people automatically.</p></div>
+      <div class="card"><div class="feature-icon">◎</div><h3 data-en="Finance reporting" data-sv="Ekonomirapportering">Finance reporting</h3><p data-en="Get a clear view of spending and reimbursement status." data-sv="Få en tydlig överblick över kostnader och ersättningsstatus.">Get a clear view of spending and reimbursement status.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" data-en="Why NordPay" data-sv="Varför NordPay">Why NordPay</div>
+      <h2 data-en="Less administration. Better visibility." data-sv="Mindre administration. Bättre överblick.">Less administration. Better visibility.</h2>
+    </div>
+    <div class="benefits">
+      <div class="card"><h3 data-en="Save finance time" data-sv="Spara tid på ekonomi">Save finance time</h3><p data-en="Reduce manual receipt collection, spreadsheet work and follow-ups." data-sv="Minska manuellt arbete med kvitton, kalkylblad och uppföljning.">Reduce manual receipt collection, spreadsheet work and follow-ups.</p></div>
+      <div class="card"><h3 data-en="Improve compliance" data-sv="Förbättra kontrollen">Improve compliance</h3><p data-en="Create consistent approval rules and a reliable audit trail." data-sv="Skapa konsekventa godkännanderegler och full spårbarhet.">Create consistent approval rules and a reliable audit trail.</p></div>
+      <div class="card"><h3 data-en="Scale with confidence" data-sv="Skala tryggt">Scale with confidence</h3><p data-en="A repeatable expense process that works as your company grows." data-sv="Ett skalbart utläggsflöde som fungerar när företaget växer.">A repeatable expense process that works as your company grows.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="integrations">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" data-en="Integrations" data-sv="Integrationer">Integrations</div>
+      <h2 data-en="Fits into your finance stack." data-sv="Passar in i din ekonomistack.">Fits into your finance stack.</h2>
+      <p data-en="Connect the tools your finance team already uses." data-sv="Anslut verktygen som ditt ekonomiteam redan använder.">Connect the tools your finance team already uses.</p>
+    </div>
+    <div class="integration-list"><span class="pill">Fortnox</span><span class="pill">Visma</span><span class="pill">Microsoft 365</span><span class="pill">Xero</span><span class="pill">Slack</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" data-en="Customer perspective" data-sv="Kundperspektiv">Customer perspective</div>
+      <p class="quote" data-en="“NordPay gives our finance team a much clearer process from employee purchase to reimbursement. We spend less time chasing receipts and more time on analysis.”"
+         data-sv="“NordPay ger vårt ekonomiteam en mycket tydligare process från medarbetarens köp till ersättning. Vi lägger mindre tid på att jaga kvitton och mer tid på analys.”">
+        “NordPay gives our finance team a much clearer process from employee purchase to reimbursement. We spend less time chasing receipts and more time on analysis.”
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="problem">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" data-en="FAQ" data-sv="Vanliga frågor">FAQ</div>
+      <h2 data-en="Common questions." data-sv="Vanliga frågor.">Common questions.</h2>
+    </div>
+    <details class="faq"><summary data-en="Who is NordPay for?" data-sv="Vem passar NordPay för?">Who is NordPay for?</summary><p data-en="NordPay is designed for growing companies that want a simpler way to manage employee expenses." data-sv="NordPay är utformat för växande företag som vill förenkla hanteringen av medarbetarnas utlägg.">NordPay is designed for growing companies that want a simpler way to manage employee expenses.</p></details>
+    <details class="faq"><summary data-en="Does it support Swedish companies?" data-sv="Stöder NordPay svenska företag?">Does it support Swedish companies?</summary><p data-en="This portfolio project is designed around a Nordic B2B SaaS market and uses Swedish expense-management terminology." data-sv="Detta portföljprojekt är utformat för den nordiska B2B SaaS-marknaden och använder svensk terminologi för utläggshantering.">This portfolio project is designed around a Nordic B2B SaaS market and uses Swedish expense-management terminology.</p></details>
+    <details class="faq"><summary data-en="Can I see pricing?" data-sv="Kan jag se priser?">Can I see pricing?</summary><p data-en="Yes. Select “Show pricing” to view the fictional plans used for this marketing experiment." data-sv="Ja. Välj “Se priser” för att se de fiktiva prisplanerna som används i detta marknadsföringsexperiment.">Yes. Select “Show pricing” to view the fictional plans used for this marketing experiment.</p></details>
+  </div>
+</section>
+
+<section class="final">
+  <div class="container">
+    <h2 data-en="Ready to simplify expense management?" data-sv="Redo att förenkla utläggshanteringen?">Ready to simplify expense management?</h2>
+    <p data-en="See how NordPay could fit into your finance workflow." data-sv="Se hur NordPay kan passa in i ert ekonomiflöde.">See how NordPay could fit into your finance workflow.</p>
+    <div class="actions" style="justify-content:center">
+      <button class="btn btn-primary" onclick="openPricing('final')" data-en="Show pricing" data-sv="Se priser">Show pricing</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <strong>NordPay</strong>
+    <span data-en="Self-directed digital marketing portfolio project." data-sv="Självständigt digitalt marknadsföringsprojekt för portfolio.">Self-directed digital marketing portfolio project.</span>
+  </div>
+</footer>
+
+<!-- Pricing + lead modal -->
+<div id="pricingModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pricingTitle">
+  <div class="modal-box">
+    <button class="close" onclick="closePricing()" aria-label="Close">×</button>
+
+    <div id="leadStep">
+      <div class="eyebrow" data-en="Pricing" data-sv="Priser">Pricing</div>
+      <h2 id="pricingTitle" data-en="See NordPay pricing." data-sv="Se NordPays priser.">See NordPay pricing.</h2>
+      <p style="color:var(--muted)" data-en="Tell us who you are first. No email required."
+         data-sv="Berätta först vem du är. Ingen e-postadress krävs.">Tell us who you are first. No email required.</p>
+
+      <form class="lead-form" onsubmit="submitPricingLead(event)">
+        <label for="leadName" data-en="Name *" data-sv="Namn *">Name *</label>
+        <input id="leadName" name="name" required autocomplete="name" />
+
+        <label for="leadCompany" data-en="Company name *" data-sv="Företagsnamn *">Company name *</label>
+        <input id="leadCompany" name="company" required autocomplete="organization" />
+
+        <button class="btn btn-primary" style="width:100%;margin-top:18px" type="submit"
+                data-en="Show pricing" data-sv="Visa priser">Show pricing</button>
+      </form>
+    </div>
+
+    <div id="pricingStep" class="hidden">
+      <div class="eyebrow" data-en="NordPay pricing" data-sv="NordPay priser">NordPay pricing</div>
+      <h2 data-en="Simple plans for growing teams." data-sv="Enkla planer för växande team.">Simple plans for growing teams.</h2>
+      <div class="pricing-grid">
+        <div class="card price-card">
+          <h3>Starter</h3><div class="price">€99 <small>/ month</small></div>
+          <p data-en="For small teams getting started." data-sv="För mindre team som börjar digitalisera utlägg.">For small teams getting started.</p>
+          <ul><li>Up to 25 employees</li><li>Receipt capture</li><li>Basic approvals</li></ul>
+        </div>
+        <div class="card price-card" style="border:2px solid var(--teal)">
+          <h3>Growth</h3><div class="price">€249 <small>/ month</small></div>
+          <p data-en="For growing finance teams." data-sv="För växande ekonomiteam.">For growing finance teams.</p>
+          <ul><li>Up to 100 employees</li><li>Advanced workflows</li><li>Finance reporting</li></ul>
+        </div>
+        <div class="card price-card">
+          <h3>Scale</h3><div class="price" data-en="Custom" data-sv="Anpassat">Custom</div>
+          <p data-en="For larger organizations." data-sv="För större organisationer.">For larger organizations.</p>
+          <ul><li>100+ employees</li><li>Custom workflows</li><li>Priority support</li></ul>
+        </div>
+      </div>
+      <div id="leadSuccess" class="success hidden"
+           data-en="Thanks. Your pricing view has been recorded for this marketing experiment."
+           data-sv="Tack. Din prisvisning har registrerats för detta marknadsföringsexperiment.">
+        Thanks. Your pricing view has been recorded for this marketing experiment.
+      </div>
+      <p class="notice" data-en="Fictional pricing — this is a portfolio marketing experiment."
+         data-sv="Fiktiva priser — detta är ett marknadsföringsexperiment för portfolio.">
+        Fictional pricing — this is a portfolio marketing experiment.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  /*
+    NORDPAY ANALYTICS
+
+    GA4 events:
+      pricing_click  = visitor clicked "Show pricing"
+      pricing_lead   = visitor submitted name + company and unlocked pricing
+
+    These events will appear in GA4 after you replace G-XXXXXXXXXX above
+    with your real GA4 Measurement ID.
+
+    The site also sends a copy to /api/lead if you later add a backend.
+  */
+
+  let currentLanguage = localStorage.getItem("nordpay-language") || "en";
+  let pricingSource = "";
+
+  function getTrackingContext() {
+    const p = new URLSearchParams(window.location.search);
+    return {
+      page_location: window.location.href,
+      page_referrer: document.referrer || "",
+      language: currentLanguage,
+      utm_source: p.get("utm_source") || "",
+      utm_medium: p.get("utm_medium") || "",
+      utm_campaign: p.get("utm_campaign") || "",
+      utm_term: p.get("utm_term") || "",
+      utm_content: p.get("utm_content") || "",
+      device_type: /Mobi|Android/i.test(navigator.userAgent) ? "mobile" : "desktop"
+    };
+  }
+
+  function track(eventName, params = {}) {
+    const payload = { event: eventName, timestamp: new Date().toISOString(), ...getTrackingContext(), ...params };
+
+    if (typeof gtag === "function") {
+      gtag("event", eventName, params);
+    }
+
+    // Optional backend hook. It is harmless if /api/lead does not exist.
+    try {
+      fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(() => {});
+    } catch (_) {}
+  }
+
+  function setLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem("nordpay-language", lang);
+
+    document.documentElement.lang = lang === "sv" ? "sv" : "en";
+    document.querySelectorAll("[data-en][data-sv]").forEach(el => {
+      el.textContent = el.getAttribute("data-" + lang);
+    });
+
+    document.getElementById("enBtn").classList.toggle("active", lang === "en");
+    document.getElementById("svBtn").classList.toggle("active", lang === "sv");
+  }
+
+  function openPricing(source) {
+    pricingSource = source;
+    document.getElementById("pricingModal").classList.add("open");
+    document.getElementById("leadStep").classList.remove("hidden");
+    document.getElementById("pricingStep").classList.add("hidden");
+    document.getElementById("leadSuccess").classList.add("hidden");
+    document.getElementById("leadName").value = "";
+    document.getElementById("leadCompany").value = "";
+
+    track("pricing_click", { cta_source: source });
+  }
+
+  function closePricing() {
+    document.getElementById("pricingModal").classList.remove("open");
+  }
+
+  function submitPricingLead(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("leadName").value.trim();
+    const company = document.getElementById("leadCompany").value.trim();
+
+    if (!name || !company) return;
+
+    track("pricing_lead", {
+      cta_source: pricingSource,
+      lead_name: name,
+      company_name: company
+    });
+
+    document.getElementById("leadStep").classList.add("hidden");
+    document.getElementById("pricingStep").classList.remove("hidden");
+    document.getElementById("leadSuccess").classList.remove("hidden");
+  }
+
+  document.getElementById("pricingModal").addEventListener("click", function(e) {
+    if (e.target === this) closePricing();
+  });
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closePricing();
+  });
+
+  document.querySelectorAll(".pricing-link").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      openPricing("navigation");
+    });
+  });
+
+  setLanguage(currentLanguage);
+</script>
+</body>
+</html>
