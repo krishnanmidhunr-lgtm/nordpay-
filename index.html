@@ -436,6 +436,10 @@
     document.getElementById("leadCompany").value = "";
 
     track("pricing_click", { cta_source: source });
+    gtag('event', 'pricing_click', {
+  cta_source: source,
+  language: currentLanguage
+});
   }
 
   function closePricing() {
